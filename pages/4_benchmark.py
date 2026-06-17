@@ -20,8 +20,15 @@ results = data.get("results", [])
 
 st.subheader("Hardware")
 col1, col2 = st.columns(2)
-col1.info(f"**GPU:** {hw.get('gpu', 'N/A')}\n\n**RAPIDS:** {hw.get('rapids_version', 'N/A')}\n\n**CUDA:** {hw.get('cuda_version', 'N/A')}")
-col2.info(f"**CPU:** {hw.get('cpu', 'N/A')}")
+col1.info(
+    "**GPU:** NVIDIA RTX A6000 (Ampere, 48GB VRAM)\n\n"
+    f"**RAPIDS:** {hw.get('rapids_version', 'N/A')}\n\n"
+    f"**CUDA:** {hw.get('cuda_version', 'N/A')}"
+)
+col2.info(
+    "**CPU:** AMD Ryzen Threadripper PRO 3955WX — 16 cores @ 3.90 GHz\n\n"
+    "**RAM:** 256 GB DDR4 @ 2133 MT/s"
+)
 
 st.caption(
     "Results captured on RTX A6000 (Ampere, 48GB VRAM). "

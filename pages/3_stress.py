@@ -21,7 +21,6 @@ with st.sidebar:
     end = st.date_input("End date", value=pd.Timestamp("today"))
     n_sim = st.slider("Monte Carlo paths", 1_000, 20_000, DEFAULT_N_SIMULATIONS, step=1_000)
     conf = st.selectbox("Confidence level", [0.90, 0.95, 0.99], index=1, format_func=lambda x: f"{int(x*100)}%")
-    scenario_name = st.radio("Active scenario", list(SCENARIOS.keys()))
     run_btn = st.button("Run Analysis", type="primary", use_container_width=True)
 
 if not tickers or len(tickers) < 2:
@@ -50,6 +49,14 @@ if results is None:
 opt = st.session_state["stress_opt"]
 active_tickers = st.session_state["stress_tickers"]
 returns_df = st.session_state["stress_returns"]
+
+scenario_name = st.radio(
+    "Active scenario",
+    list(SCENARIOS.keys()),
+    horizontal=True,
+    label_visibility="collapsed",
+)
+
 sel = results.get(scenario_name, {})
 
 full = results.get("Full History", {})
@@ -93,6 +100,7 @@ if not scen_slice.empty:
         yaxis_title="Avg Daily Contribution (%)",
         template="plotly_dark",
         margin=dict(t=10, b=20),
+        height=300,
     )
     st.plotly_chart(fig_contrib, use_container_width=True)
 
