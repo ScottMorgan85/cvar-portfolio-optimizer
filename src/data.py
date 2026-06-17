@@ -31,7 +31,7 @@ def get_price_data(
         prices = raw["Close"]
     else:
         prices = raw
-    prices = prices.dropna(axis=1, thresh=int(len(prices) * 0.9))
+    prices = prices.dropna(axis=1, thresh=int(len(prices) * 0.5))
     prices.to_parquet(cache_path)
     return prices
 
