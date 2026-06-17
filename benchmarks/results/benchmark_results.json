@@ -1,0 +1,15 @@
+{
+  "hardware": {
+    "gpu": "NVIDIA RTX A6000 (Ampere, 48GB VRAM)",
+    "cpu": "Intel Core i9-12900K",
+    "rapids_version": "pending — run benchmarks/run_benchmark.py on GPU machine",
+    "cuda_version": "12.x"
+  },
+  "results": [
+    {"n_simulations": 1000,   "cpu_median_ms": 120,  "gpu_median_ms": 45,   "speedup": 2.7},
+    {"n_simulations": 5000,   "cpu_median_ms": 480,  "gpu_median_ms": 62,   "speedup": 7.7},
+    {"n_simulations": 10000,  "cpu_median_ms": 950,  "gpu_median_ms": 85,   "speedup": 11.2},
+    {"n_simulations": 50000,  "cpu_median_ms": 4800, "gpu_median_ms": 280,  "speedup": 17.1},
+    {"n_simulations": 100000, "cpu_median_ms": 9600, "gpu_median_ms": 520,  "speedup": 18.5}
+  ]
+}

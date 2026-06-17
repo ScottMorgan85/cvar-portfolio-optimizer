@@ -1,0 +1,4 @@
+-r requirements.txt
+cupy-cuda12x>=13.0
+# RAPIDS: install via conda or pip per https://docs.rapids.ai/install
+# cudf-cu12, cuml-cu12, cuopt-cu12 — version-pin to your CUDA version
