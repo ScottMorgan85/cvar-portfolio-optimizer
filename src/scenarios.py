@@ -38,7 +38,6 @@ def run_scenario_cvar(
         cvar = float(-tail.mean()) if len(tail) > 0 else 0.0
         var = float(-cutoff)
         mean_ret = float(port_ret.mean())
-        worst_day = float(slice_df.values @ weights) if len(slice_df) > 0 else 0.0
         worst_day = float((slice_df.values @ weights).min())
 
         results[name] = {
