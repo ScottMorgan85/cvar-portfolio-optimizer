@@ -1,15 +1,46 @@
 {
   "hardware": {
     "gpu": "NVIDIA RTX A6000 (Ampere, 48GB VRAM)",
-    "cpu": "Intel Core i9-12900K",
-    "rapids_version": "pending — run benchmarks/run_benchmark.py on GPU machine",
-    "cuda_version": "12.x"
+    "cpu": "x86_64",
+    "rapids_version": "25.10.00",
+    "cuda_version": "V12.9.86",
+    "n_tickers": 95
   },
   "results": [
-    {"n_simulations": 1000,   "cpu_median_ms": 120,  "gpu_median_ms": 45,   "speedup": 2.7},
-    {"n_simulations": 5000,   "cpu_median_ms": 480,  "gpu_median_ms": 62,   "speedup": 7.7},
-    {"n_simulations": 10000,  "cpu_median_ms": 950,  "gpu_median_ms": 85,   "speedup": 11.2},
-    {"n_simulations": 50000,  "cpu_median_ms": 4800, "gpu_median_ms": 280,  "speedup": 17.1},
-    {"n_simulations": 100000, "cpu_median_ms": 9600, "gpu_median_ms": 520,  "speedup": 18.5}
+    {
+      "n_simulations": 1000,
+      "n_tickers": 95,
+      "cpu_median_ms": 422.4,
+      "gpu_median_ms": 203.5,
+      "speedup": 2.1
+    },
+    {
+      "n_simulations": 5000,
+      "n_tickers": 95,
+      "cpu_median_ms": 593.7,
+      "gpu_median_ms": 226.9,
+      "speedup": 2.6
+    },
+    {
+      "n_simulations": 10000,
+      "n_tickers": 95,
+      "cpu_median_ms": 2455.4,
+      "gpu_median_ms": 228.4,
+      "speedup": 10.8
+    },
+    {
+      "n_simulations": 50000,
+      "n_tickers": 95,
+      "cpu_median_ms": 2609.4,
+      "gpu_median_ms": 249.7,
+      "speedup": 10.4
+    },
+    {
+      "n_simulations": 100000,
+      "n_tickers": 95,
+      "cpu_median_ms": 8331.0,
+      "gpu_median_ms": 272.4,
+      "speedup": 30.6
+    }
   ]
 }

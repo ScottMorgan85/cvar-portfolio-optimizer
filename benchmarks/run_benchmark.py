@@ -3,6 +3,8 @@
 Usage:
     python benchmarks/run_benchmark.py
 
+Downloads 5 years of S&P 500 price data via yfinance, drops tickers with
+>10% missing data, then runs CPU vs GPU CVaR timing across N_SIMS_LIST.
 Saves results to benchmarks/results/benchmark_results.json.
 """
 import json
@@ -11,6 +13,8 @@ import platform
 import subprocess
 from pathlib import Path
 import numpy as np
+import pandas as pd
+import yfinance as yf
 
 ROOT = Path(__file__).parent.parent
 RESULTS_PATH = ROOT / "benchmarks" / "results" / "benchmark_results.json"
@@ -18,13 +22,37 @@ RESULTS_PATH.parent.mkdir(parents=True, exist_ok=True)
 
 N_TRIALS = 3
 N_SIMS_LIST = [1_000, 5_000, 10_000, 50_000, 100_000]
-N_ASSETS = 8
 CONFIDENCE = 0.95
 
+SP500_TICKERS = [
+    "AAPL", "MSFT", "AMZN", "NVDA", "GOOGL", "BRK-B", "UNH", "XOM",
+    "JNJ", "JPM", "V", "PG", "MA", "HD", "CVX", "MRK", "ABBV", "LLY",
+    "PEP", "KO", "COST", "AVGO", "WMT", "MCD", "CSCO", "TMO", "ABT", "CRM",
+    "ACN", "DHR", "NKE", "TXN", "NEE", "PM", "UNP", "AMD", "HON",
+    "ORCL", "LOW", "INTC", "UPS", "IBM", "QCOM", "BA", "CAT", "SPGI", "GE",
+    "DIS", "AMGN", "INTU", "DE", "SBUX", "ISRG", "AMAT", "PLD", "GS", "MDLZ",
+    "ADI", "BKNG", "AXP", "GILD", "SYK", "TJX", "BLK", "MMC", "VRTX", "REGN",
+    "CVS", "SCHW", "ADP", "C", "PNC", "ZTS", "LRCX", "SO", "MO", "CI",
+    "BDX", "DUK", "CME", "TMUS", "BSX", "CL", "EOG", "CB", "NOC",
+    "MMM", "ITW", "SLB", "USB", "EQIX", "APD", "WM", "MU", "FCX", "CSX",
+]
 
-def _make_returns(n_assets: int = N_ASSETS, seed: int = 42) -> np.ndarray:
-    rng = np.random.default_rng(seed)
-    return rng.normal(0.0004, 0.012, size=(504, n_assets))
+
+def _fetch_returns() -> np.ndarray:
+    """Download 5yr daily prices, filter, compute log returns. Returns (T, N) array."""
+    end = pd.Timestamp.today().strftime("%Y-%m-%d")
+    start = (pd.Timestamp.today() - pd.DateOffset(years=5)).strftime("%Y-%m-%d")
+
+    print(f"Downloading {len(SP500_TICKERS)} tickers ({start} → {end})…")
+    raw = yf.download(SP500_TICKERS, start=start, end=end, auto_adjust=True, progress=False)
+    prices = raw["Close"] if isinstance(raw.columns, pd.MultiIndex) else raw
+
+    min_obs = int(len(prices) * 0.90)
+    prices = prices.dropna(axis=1, thresh=min_obs)
+    print(f"Tickers surviving >90% data filter: {prices.shape[1]} / {len(SP500_TICKERS)}")
+
+    returns = np.log(prices / prices.shift(1)).dropna().values
+    return returns, prices.shape[1]
 
 
 def _cpu_run(returns: np.ndarray, n_sim: int) -> float:
@@ -99,7 +127,7 @@ def _get_gpu_info() -> tuple[str, str]:
 
 
 def main():
-    returns = _make_returns()
+    returns, n_tickers = _fetch_returns()
     gpu_name, rapids_ver = _get_gpu_info()
 
     try:
@@ -116,6 +144,7 @@ def main():
         "cpu": cpu_name,
         "rapids_version": rapids_ver,
         "cuda_version": subprocess.getoutput("nvcc --version | grep release | awk '{print $6}'").strip(),
+        "n_tickers": n_tickers,
     }
 
     results = []
@@ -130,6 +159,7 @@ def main():
 
         row = {
             "n_simulations": n_sim,
+            "n_tickers": n_tickers,
             "cpu_median_ms": round(cpu_median, 1),
         }
 

@@ -48,6 +48,7 @@ if run_btn or "frontier_df" not in st.session_state:
         st.session_state["frontier_opt"] = opt
         st.session_state["frontier_tickers"] = active_tickers
         st.session_state["frontier_mu"] = mu
+        st.session_state["frontier_returns"] = returns_df
 
 frontier_df = st.session_state.get("frontier_df")
 if frontier_df is None:
@@ -57,6 +58,7 @@ if frontier_df is None:
 opt = st.session_state["frontier_opt"]
 active_tickers = st.session_state["frontier_tickers"]
 mu = st.session_state["frontier_mu"]
+returns_df = st.session_state["frontier_returns"]
 
 # build hover text showing weights for each frontier point
 hover_texts = []
